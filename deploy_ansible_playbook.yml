@@ -1,0 +1,68 @@
+- name: DEPLOY FROM JENKINS
+  hosts: localhost
+  vars:
+    the_vars:
+      extra_vars:
+        warehouse_build_version: "{{build_version}}"
+        library_path: "{{library_path}}"
+        private_docker_registry_secret: "{{private_docker_registry_secret}}"
+        env: "{{env}}"
+  tasks:
+    - name: get Ansible Tower auth token
+      uri:
+        url: "https://{{ansible_tower_address}}/api/v1/authtoken/"
+        validate_certs: False
+        method: POST
+        body_format: json
+        body:
+          username: "{{tower_user}}"
+          password: "{{tower_pass}}"
+      register: access_token
+    - name: print response
+      debug: msg="{{access_token}}"
+
+    - name: check tower job ping
+      uri:
+          url: "https://{{ansible_tower_address}}/api/v1/ping/"
+          validate_certs: False
+          method: GET
+          body_format: json
+      register: ping
+
+    - name: print PING json response
+      debug: msg="{{ping.json}}"
+
+    - name: launch tower job
+      uri:
+        url: "https://{{ansible_tower_address}}/api/v1/job_templates/{{job_template_id}}/launch/"
+        validate_certs: False
+        status_code: 202
+        method: POST
+        HEADER_Authorization: "Token {{access_token.json.token}}"
+        body:
+          "{{the_vars}}"
+        body_format: json
+      register: response_launch
+
+      ignore_errors: yes
+    - name: set job_number
+      set_fact: job_number="{{ response_launch.json['job'] }}"
+
+    - name: print job_number
+      debug: msg="{{ job_number }}"
+
+    - name: Ping Ansible Tower until status is not pending or running
+      uri:
+        url: "https://{{ansible_tower_address}}/api/v1/jobs/{{ job_number }}/"
+        HEADER_Authorization: "Token {{access_token.json.token}}"
+        validate_certs: False
+      register: result
+      until: result.json['status'] in ['failed', 'successful']
+      retries: 60
+      delay: 5
+      ignore_errors: yes
+
+    - name: Ping Ansible Tower to determine if it failed
+      fail: msg="Job failed"
+      when: result.json['status'] == 'failed'
+
