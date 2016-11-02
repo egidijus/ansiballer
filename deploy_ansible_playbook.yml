@@ -3,9 +3,8 @@
   vars:
     the_vars:
       extra_vars:
-        warehouse_build_version: "{{build_version}}"
+        build_version: "{{build_version}}"
         library_path: "{{library_path}}"
-        private_docker_registry_secret: "{{private_docker_registry_secret}}"
         env: "{{env}}"
   tasks:
     - name: get Ansible Tower auth token
