@@ -47,8 +47,8 @@
     - name: set job_number
       set_fact: job_number="{{ response_launch.json['job'] }}"
 
-    - name: print job_number
-      debug: msg="{{ job_number }}"
+    - name: print job url
+      debug: msg="https://{{ ansible_tower_address }}/#/jobs/{{ job_number }}"
 
     - name: Ping Ansible Tower until status is not pending or running
       uri:
