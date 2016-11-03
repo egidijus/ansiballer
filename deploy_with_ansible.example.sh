@@ -4,7 +4,7 @@
 
 # The following vars should be set in the Jenkins job
 #  - $BUILD_TAG
-#  - $TOWER_IP
+#  - $TOWER_URL
 #  - $TOWER_USER
 #  - $TOWER_PASS
 #  - $ENV (Can be passed as an arg to this script)
@@ -35,7 +35,7 @@ echo "------------------- DEPLOYING ver $BUILD_TAG WITH ANSIBLE ON TEST --------
 ansible-playbook -v \
     -e build_version=$BUILD_TAG \
     -e env=$ENV \
-    -e ansible_tower_address=$TOWER_IP \
+    -e ansible_tower_address=$TOWER_URL \
     -e tower_user=$TOWER_USER \
     -e tower_pass=$TOWER_PASS \
     -e job_template_id=$TOWER_TEMPLATE \
