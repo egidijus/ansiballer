@@ -29,7 +29,7 @@ echo "BUILD_NUMBER ==  ${BUILD_NUMBER}"
 echo "BUILD_TAG ==  ${BUILD_TAG}"
 echo "ENV ==  ${ENV}"
 
-echo "------------------- DEPLOYING ver $PIPELINE_VERSION WITH ANSIBLE ON TEST -------------------"
+echo "------------------- DEPLOYING ver $BUILD_TAG WITH ANSIBLE ON TEST -------------------"
 
 
 ansible-playbook -v \
