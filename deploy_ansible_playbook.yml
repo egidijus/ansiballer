@@ -50,7 +50,7 @@
     - name: print job url
       debug: msg="https://{{ ansible_tower_address }}/#/jobs/{{ job_number }}"
 
-    - name: Ping Ansible Tower until status is not pending or running
+    - name: Ping Ansible Tower until status is not failed or successful
       uri:
         url: "https://{{ansible_tower_address}}/api/v1/jobs/{{ job_number }}/"
         HEADER_Authorization: "Token {{access_token.json.token}}"
