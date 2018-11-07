@@ -11,6 +11,7 @@
       uri:
         url: "https://{{ansible_tower_address}}/api/v1/authtoken/"
         validate_certs: False
+        status_code: 202, 201
         method: POST
         body_format: json
         body:
